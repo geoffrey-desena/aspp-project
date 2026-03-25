@@ -3,7 +3,7 @@ requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "risk_tools"
+name = "gds_risk_tools"
 version = "0.1.0"
 description = "Bootstrapped wind/load risk calculations"
 readme = "README.md"
