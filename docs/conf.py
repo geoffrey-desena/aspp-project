@@ -33,4 +33,10 @@ html_static_path = ['_static']
 import sys
 import os
 
-sys.path.insert(0,os.path.abspath('../..'))
+sys.path.insert(0,os.path.abspath('..'))
+
+autodoc_default_options = {
+    "members": True,
+    "undoc-members": True,
+    "show-inheritance": True,
+}
