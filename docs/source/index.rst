@@ -6,20 +6,17 @@
 risk_tools documentation
 ========================
 
-Add your content using ``reStructuredText`` syntax. See the
-`reStructuredText <https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html>`_
-documentation for details.
-
+Documentation for the ``risk_tools`` package and its modules.
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-.. automodule:: risk_tools
-    :members:
-    
+   api
+
 Indices and tables
 ==================
+
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
