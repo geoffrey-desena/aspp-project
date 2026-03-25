@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "risk_tools"
+version = "0.1.0"
+description = "Bootstrapped wind/load risk calculations"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+  { name = "Geoffrey De Sena" }
+]
+dependencies = [
+  "numpy",
+  "pandas",
+  "scipy"
+]
+
+[tool.setuptools]
+packages = ["risk_tools"]
