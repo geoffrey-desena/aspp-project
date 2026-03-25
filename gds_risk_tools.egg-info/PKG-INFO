@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: gds_risk_tools
-Version: 0.1.0
+Version: 0.1.1
 Summary: Bootstrapped wind/load risk calculations
 Author: Geoffrey De Sena
 Requires-Python: >=3.10
@@ -60,7 +60,7 @@ Profiling
     own optimized fitting algorithm, which I think is safely beyond the scope
     of this course.
 - I have left the decorators and Chat's profiling function so that you can see
-    it, but in I will remove them when I continue developing this code.
+    it, but I will remove them when I continue developing this code.
 
 Testing
 - in the test/ directory, there are some tests for each of the functions
@@ -72,13 +72,14 @@ Testing
 
 Documentation
 - all modules and functions have docstrings according to the numpydoc format
-- 
+- Documentation is available at https://geoffrey-aspp-risk-tools.readthedocs.io/en/latest/
 
 Packaging
-IN PROGRESS
+- The package has been published on PyPI
+- You might even be reading this here: https://pypi.org/project/gds-risk-tools/0.1.0/
 
 Pandas
 - I'll put this in here because it was part of the course, but I was already 
-working primarily with pandas before the course so most of the data is handled
-using dataframes.
+    working primarily with pandas before the course so most of the data is handled
+    using dataframes.
 
