@@ -21,8 +21,9 @@ import pandas as pd
 from scipy.stats import lognorm
 
 from .bootstrap import bootstrap
+from .profiling import timed
 
-
+@timed
 def fp_params(
     df_fp: pd.DataFrame,
     n_boot: int,
@@ -83,16 +84,7 @@ def fp_params(
 
     Only finite positive ``p_load`` values are retained before fitting.
 
-    Examples
-    --------
-    >>> import pandas as pd
-    >>> from risk_tools.fp import fp_params
-    >>> df = pd.DataFrame(
-    ...     {"p_load": [0.4, 0.5, 0.6], "v_char": [8.2, 8.7, 9.1]}
-    ... )
-    >>> out = fp_params(df, n_boot=1, random_state=1)
-    >>> "original" in out.index.get_level_values("sample")
-    True
+
     """
     required_cols = {"p_load", "v_char"}
     if not required_cols.issubset(df_fp.columns):

@@ -16,18 +16,10 @@ import pandas as pd
 
 
 SEASON_MAP = {
-    12: "winter",
-    1: "winter",
-    2: "winter",
-    3: "spring",
-    4: "spring",
-    5: "spring",
-    6: "summer",
-    7: "summer",
-    8: "summer",
-    9: "fall",
-    10: "fall",
-    11: "fall",
+    12: "winter", 1: "winter", 2: "winter",
+    3: "spring", 4: "spring", 5: "spring",
+    6: "summer", 7: "summer", 8: "summer",
+    9: "fall", 10: "fall", 11: "fall",
 }
 
 SEASON_ORDER = ["spring", "summer", "fall", "winter"]
@@ -74,9 +66,7 @@ def coerce_v_char_input(obj: pd.Series | pd.DataFrame) -> pd.DataFrame:
             df_v.columns = ["v_char"]
             return df_v
 
-    raise TypeError(
-        "Wind-speed input must be a pandas Series or a one-column DataFrame."
-    )
+    raise TypeError("Wind-speed input must be a pandas Series or a one-column DataFrame.")
 
 
 def split_by_season(df: pd.DataFrame) -> dict[str, pd.DataFrame]:

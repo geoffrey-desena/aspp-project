@@ -8,9 +8,14 @@ wind-speed time series. The main public function, ``fv_params``, fits a
 two-parameter Weibull distribution to the original dataset and to a set
 of bootstrap resamples.
 
-The output is intended to be used later in the risk calculation, where
-the fitted Weibull distribution describes the probability of wind speed
+The output is intended for later use in the risk calculation, where the
+fitted Weibull distribution describes the probability of wind speed
 falling within each integer wind-speed bin.
+
+This module also includes internal profiling hooks so that the runtime
+of the major steps in the fitting workflow can be inspected. Timing is
+aggregated across repeated operations to produce a concise summary rather
+than one line of output per bootstrap iteration.
 """
 
 from __future__ import annotations
@@ -20,8 +25,10 @@ import pandas as pd
 from scipy.stats import weibull_min
 
 from .bootstrap import bootstrap
+from .profiling import ProfileAccumulator, timed
 
 
+@timed
 def fv_params(
     df_v: pd.DataFrame,
     n_boot: int,
@@ -68,6 +75,10 @@ def fv_params(
 
     Only finite positive values are retained before fitting.
 
+    Internal profiling is performed with aggregated timing categories so
+    that the main cost centers can be identified without printing one
+    line per bootstrap iteration.
+
     Examples
     --------
     >>> import pandas as pd
@@ -80,35 +91,48 @@ def fv_params(
     if "v_char" not in df_v.columns:
         raise ValueError("Input DataFrame must contain a column named 'v_char'.")
 
-    v = df_v["v_char"].to_numpy()
-    v = v[np.isfinite(v)]
-    v = v[v > 0]
+    prof = ProfileAccumulator()
+
+    with prof.time_block("extract original array"):
+        v_all = df_v["v_char"].to_numpy()
+        v = v_all[np.isfinite(v_all)]
+        v = v[v > 0]
 
     if len(v) == 0:
         raise ValueError("Input wind-speed data contains no finite positive values.")
 
     results: list[dict[str, float | str]] = []
 
-    shape, _, scale = weibull_min.fit(v, floc=0)
-    results.append({"sample": "original", "shape": shape, "scale": scale})
+    with prof.time_block("fit original weibull"):
+        shape, _, scale = weibull_min.fit(v, floc=0)
+        results.append({"sample": "original", "shape": shape, "scale": scale})
 
-    boot_idx = bootstrap(df_v, n_boot=n_boot, random_state=random_state)
+    with prof.time_block("generate bootstrap indices"):
+        boot_idx = bootstrap(df_v, n_boot=n_boot, random_state=random_state)
 
     for i, idx in enumerate(boot_idx):
-        v_boot = df_v["v_char"].iloc[idx].to_numpy()
-        v_boot = v_boot[np.isfinite(v_boot)]
-        v_boot = v_boot[v_boot > 0]
+        with prof.time_block("extract bootstrap sample"):
+            v_boot = v_all[idx]
+
+        with prof.time_block("clean bootstrap sample"):
+            v_boot = v_boot[np.isfinite(v_boot)]
+            v_boot = v_boot[v_boot > 0]
 
         if len(v_boot) == 0:
             shape = np.nan
             scale = np.nan
         else:
             try:
-                shape, _, scale = weibull_min.fit(v_boot, floc=0)
+                with prof.time_block("fit bootstrap weibull"):
+                    shape, _, scale = weibull_min.fit(v_boot, floc=0)
             except Exception:
                 shape = np.nan
                 scale = np.nan
 
         results.append({"sample": f"boot_{i}", "shape": shape, "scale": scale})
 
-    return pd.DataFrame(results).set_index("sample")
+    with prof.time_block("assemble output dataframe"):
+        out = pd.DataFrame(results).set_index("sample")
+
+    prof.report()
+    return out

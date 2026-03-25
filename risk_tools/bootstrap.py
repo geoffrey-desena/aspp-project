@@ -17,8 +17,9 @@ from __future__ import annotations
 
 import numpy as np
 import pandas as pd
+from .profiling import timed
 
-
+@timed
 def bootstrap(
     data: int | pd.Series | pd.DataFrame | np.ndarray,
     n_boot: int,

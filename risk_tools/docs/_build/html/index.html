@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>risk_tools documentation &#8212; risk_tools 2026 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=fc6fd62b"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="risk-tools-documentation">
+<h1>risk_tools documentation<a class="headerlink" href="#risk-tools-documentation" title="Link to this heading">¶</a></h1>
+<p>Add your content using <code class="docutils literal notranslate"><span class="pre">reStructuredText</span></code> syntax. See the
+<a class="reference external" href="https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html">reStructuredText</a>
+documentation for details.</p>
+<div class="toctree-wrapper compound">
+</div>
+<section id="risk-tools">
+<span id="module-risk_tools"></span><h2>risk_tools<a class="headerlink" href="#risk-tools" title="Link to this heading">¶</a></h2>
+<p>Package for bootstrapped wind/load risk calculations.</p>
+<p>This package provides functions to:</p>
+<ul class="simple">
+<li><p>generate bootstrap resampling indices,</p></li>
+<li><p>fit Weibull distributions to wind-speed data,</p></li>
+<li><p>fit lognormal distributions to normalized load data conditioned on
+wind-speed bins,</p></li>
+<li><p>calculate exceedance risk for operating-envelope boundaries, and</p></li>
+<li><p>split timestamp-indexed data into seasonal subsets.</p></li>
+</ul>
+<section id="modules">
+<h3>Modules<a class="headerlink" href="#modules" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>bootstrap</dt><dd><p>Bootstrap index generation.</p>
+</dd>
+<dt>fv</dt><dd><p>Weibull fitting for wind-speed data.</p>
+</dd>
+<dt>fp</dt><dd><p>Lognormal fitting for load conditioned on wind speed.</p>
+</dd>
+<dt>risk</dt><dd><p>Risk calculation from fitted wind-speed and load distributions.</p>
+</dd>
+<dt>utils</dt><dd><p>Utility functions for data preparation and formatting.</p>
+</dd>
+</dl>
+</section>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="risk_tools.bootstrap">
+<span class="sig-prename descclassname"><span class="pre">risk_tools.</span></span><span class="sig-name descname"><span class="pre">bootstrap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Series</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">DataFrame</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_boot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#risk_tools.bootstrap" title="Link to this definition">¶</a></dt>
+<dd><p>Generate bootstrap index arrays for an input dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data</strong><span class="classifier">int or pandas.Series or pandas.DataFrame or numpy.ndarray</span></dt><dd><p>Input data or number of observations. If an integer is supplied,
+it is interpreted directly as the number of observations. If a
+pandas or NumPy object is supplied, the number of observations
+is inferred using <code class="docutils literal notranslate"><span class="pre">len(data)</span></code>.</p>
+</dd>
+<dt><strong>n_boot</strong><span class="classifier">int</span></dt><dd><p>Number of bootstrap samples to generate.</p>
+</dd>
+<dt><strong>random_state</strong><span class="classifier">int or None, optional</span></dt><dd><p>Seed for the random number generator. If provided, the bootstrap
+samples are reproducible. The default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>list of numpy.ndarray</dt><dd><p>List of bootstrap index arrays. Each array has length equal to
+the number of observations in the original dataset and contains
+indices sampled with replacement.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>ValueError</dt><dd><p>If the input dataset is empty.</p>
+</dd>
+<dt>ValueError</dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">n_boot</span></code> is negative.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Bootstrap resampling is performed by drawing indices with
+replacement from the range <code class="docutils literal notranslate"><span class="pre">0</span></code> to <code class="docutils literal notranslate"><span class="pre">n_obs</span> <span class="pre">-</span> <span class="pre">1</span></code>. The returned
+indices can then be applied to the relevant pandas objects using
+<code class="docutils literal notranslate"><span class="pre">.iloc</span></code> or to NumPy arrays using standard indexing.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">risk_tools.bootstrap</span><span class="w"> </span><span class="kn">import</span> <span class="n">bootstrap</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">idx</span> <span class="o">=</span> <span class="n">bootstrap</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">n_boot</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+<span class="go">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">4</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="risk_tools.coerce_v_char_input">
+<span class="sig-prename descclassname"><span class="pre">risk_tools.</span></span><span class="sig-name descname"><span class="pre">coerce_v_char_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Series</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#risk_tools.coerce_v_char_input" title="Link to this definition">¶</a></dt>
+<dd><p>Normalize wind-speed input to a one-column DataFrame named <code class="docutils literal notranslate"><span class="pre">&quot;v_char&quot;</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>obj</strong><span class="classifier">pandas.Series or pandas.DataFrame</span></dt><dd><p>Wind-speed data loaded from file. It may already be a one-column
+DataFrame or it may be a Series without a column name.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>pandas.DataFrame</dt><dd><p>One-column DataFrame with the column name <code class="docutils literal notranslate"><span class="pre">&quot;v_char&quot;</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>TypeError</dt><dd><p>If the input is neither a pandas Series nor a one-column
+DataFrame.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">risk_tools.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">coerce_v_char_input</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">coerce_v_char_input</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+<span class="go">[&#39;v_char&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="risk_tools.format_mean_pm_std">
+<span class="sig-prename descclassname"><span class="pre">risk_tools.</span></span><span class="sig-name descname"><span class="pre">format_mean_pm_std</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mean_val</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">std_val</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decimals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">6</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#risk_tools.format_mean_pm_std" title="Link to this definition">¶</a></dt>
+<dd><p>Format a mean and standard deviation as <code class="docutils literal notranslate"><span class="pre">mean</span> <span class="pre">±</span> <span class="pre">std</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>mean_val</strong><span class="classifier">float</span></dt><dd><p>Mean value.</p>
+</dd>
+<dt><strong>std_val</strong><span class="classifier">float</span></dt><dd><p>Standard deviation.</p>
+</dd>
+<dt><strong>decimals</strong><span class="classifier">int, optional</span></dt><dd><p>Number of decimal places to display. The default is <code class="docutils literal notranslate"><span class="pre">6</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>str</dt><dd><p>Formatted string of the form <code class="docutils literal notranslate"><span class="pre">&quot;0.123456</span> <span class="pre">±</span> <span class="pre">0.012345&quot;</span></code>. If
+either value is missing, returns <code class="docutils literal notranslate"><span class="pre">&quot;NaN&quot;</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="risk_tools.fp_params">
+<span class="sig-prename descclassname"><span class="pre">risk_tools.</span></span><span class="sig-name descname"><span class="pre">fp_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_fp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_boot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bin_width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bin_min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bin_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">32.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#risk_tools.fp_params" title="Link to this definition">¶</a></dt>
+<dd><p>Fit lognormal distributions to load data within wind-speed bins.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>df_fp</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>DataFrame containing columns <code class="docutils literal notranslate"><span class="pre">&quot;p_load&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;v_char&quot;</span></code>.
+<code class="docutils literal notranslate"><span class="pre">p_load</span></code> is the normalized load variable and <code class="docutils literal notranslate"><span class="pre">v_char</span></code> is the
+associated wind speed.</p>
+</dd>
+<dt><strong>n_boot</strong><span class="classifier">int</span></dt><dd><p>Number of bootstrap samples to generate and fit.</p>
+</dd>
+<dt><strong>random_state</strong><span class="classifier">int or None, optional</span></dt><dd><p>Seed for reproducible bootstrap resampling. The default is
+<code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+<dt><strong>bin_width</strong><span class="classifier">float, optional</span></dt><dd><p>Width of the wind-speed bins. The default is <code class="docutils literal notranslate"><span class="pre">1.0</span></code>.</p>
+</dd>
+<dt><strong>bin_min</strong><span class="classifier">float, optional</span></dt><dd><p>Lower bound of the wind-speed binning range. The default is
+<code class="docutils literal notranslate"><span class="pre">0.0</span></code>.</p>
+</dd>
+<dt><strong>bin_max</strong><span class="classifier">float, optional</span></dt><dd><p>Upper bound of the wind-speed binning range. The default is
+<code class="docutils literal notranslate"><span class="pre">32.0</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt>pandas.DataFrame</dt><dd><p>DataFrame indexed by <code class="docutils literal notranslate"><span class="pre">[&quot;sample&quot;,</span> <span class="pre">&quot;bin&quot;]</span></code> with columns:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">shape</span></code> : fitted lognormal shape parameter</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scale</span></code> : fitted lognormal scale parameter</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">n</span></code> : number of valid observations used in the fit</p></li>
+</ul>
+<p>The <code class="docutils literal notranslate"><span class="pre">sample</span></code> level contains <code class="docutils literal notranslate"><span class="pre">&quot;original&quot;</span></code> plus the bootstrap
+samples <code class="docutils literal notranslate"><span class="pre">&quot;boot_0&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;boot_1&quot;</span></code>, and so on.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>ValueError</dt><dd><p>If the input DataFrame does not contain both <code class="docutils literal notranslate"><span class="pre">&quot;p_load&quot;</span></code> and
+<code class="docutils literal notranslate"><span class="pre">&quot;v_char&quot;</span></code>.</p>
+</dd>
+<dt>ValueError</dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">bin_width</span></code> is not positive.</p>
+</dd>
+<dt>ValueError</dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">bin_max</span></code> is not greater than <code class="docutils literal notranslate"><span class="pre">bin_min</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The lognormal fit is performed with location fixed at zero by
+passing <code class="docutils literal notranslate"><span class="pre">floc=0</span></code> to <code class="docutils literal notranslate"><span class="pre">scipy.stats.lognorm.fit</span></code>.</p>
+<p>Only finite positive <code class="docutils literal notranslate"><span class="pre">p_load</span></code> values are retained before fitting.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="risk_tools.fv_params">
+<span class="sig-prename descclassname"><span class="pre">risk_tools.</span></span><span class="sig-name descname"><span class="pre">fv_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_boot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#risk_tools.fv_params" title="Link to this definition">¶</a></dt>
+<dd><p>Fit Weibull distributions to original and bootstrapped wind-speed data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>df_v</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>DataFrame containing a column named <code class="docutils literal notranslate"><span class="pre">&quot;v_char&quot;</span></code>. The values are
+assumed to represent wind speed. The index is typically a
+timestamp, but only the data column is used in the fit.</p>
+</dd>
+<dt><strong>n_boot</strong><span class="classifier">int</span></dt><dd><p>Number of bootstrap samples to generate and fit.</p>
+</dd>
+<dt><strong>random_state</strong><span class="classifier">int or None, optional</span></dt><dd><p>Seed for reproducible bootstrap resampling. The default is
+<code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>pandas.DataFrame</dt><dd><p>DataFrame indexed by sample name. The first row corresponds to
+the original dataset and is labeled <code class="docutils literal notranslate"><span class="pre">&quot;original&quot;</span></code>. Subsequent
+rows correspond to bootstrap samples labeled <code class="docutils literal notranslate"><span class="pre">&quot;boot_0&quot;</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&quot;boot_1&quot;</span></code>, and so on. Columns are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">shape</span></code> : fitted Weibull shape parameter</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scale</span></code> : fitted Weibull scale parameter</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>ValueError</dt><dd><p>If the input DataFrame does not contain a column named
+<code class="docutils literal notranslate"><span class="pre">&quot;v_char&quot;</span></code>.</p>
+</dd>
+<dt>ValueError</dt><dd><p>If the wind-speed data contain no finite positive values.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The fit is a two-parameter Weibull fit with location fixed at zero
+by passing <code class="docutils literal notranslate"><span class="pre">floc=0</span></code> to <code class="docutils literal notranslate"><span class="pre">scipy.stats.weibull_min.fit</span></code>.</p>
+<p>Only finite positive values are retained before fitting.</p>
+<p>Internal profiling is performed with aggregated timing categories so
+that the main cost centers can be identified without printing one
+line per bootstrap iteration.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">risk_tools.fv</span><span class="w"> </span><span class="kn">import</span> <span class="n">fv_params</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;v_char&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">5.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">,</span> <span class="mf">7.0</span><span class="p">,</span> <span class="mf">8.0</span><span class="p">]})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">out</span> <span class="o">=</span> <span class="n">fv_params</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">n_boot</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s2">&quot;original&quot;</span> <span class="ow">in</span> <span class="n">out</span><span class="o">.</span><span class="n">index</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="risk_tools.risk_calculation">
+<span class="sig-prename descclassname"><span class="pre">risk_tools.</span></span><span class="sig-name descname"><span class="pre">risk_calculation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_fp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df_v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df_plimits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_boot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overall_v_lower</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overall_v_upper</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">32.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">low_v_lower</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">low_v_upper</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">15.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">high_v_lower</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">15.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">high_v_upper</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">32.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_upper</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bin_width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fp_bin_min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fp_bin_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">32.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DataFrame</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#risk_tools.risk_calculation" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate original and bootstrap risk metrics.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>df_fp</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>DataFrame containing columns <code class="docutils literal notranslate"><span class="pre">&quot;p_load&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;v_char&quot;</span></code> for
+the paired load-wind dataset.</p>
+</dd>
+<dt><strong>df_v</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>DataFrame containing a column named <code class="docutils literal notranslate"><span class="pre">&quot;v_char&quot;</span></code> for the wind
+time series used to fit the wind-speed distribution.</p>
+</dd>
+<dt><strong>df_plimits</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>DataFrame indexed by wind-speed bin with columns <code class="docutils literal notranslate"><span class="pre">&quot;danger&quot;</span></code>
+and <code class="docutils literal notranslate"><span class="pre">&quot;limit&quot;</span></code>. These columns define the lower integration
+limits of the risk calculation.</p>
+</dd>
+<dt><strong>n_boot</strong><span class="classifier">int</span></dt><dd><p>Number of bootstrap samples to generate.</p>
+</dd>
+<dt><strong>random_state</strong><span class="classifier">int or None, optional</span></dt><dd><p>Seed for reproducible bootstrap resampling. The default is
+<code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+<dt><strong>overall_v_lower, overall_v_upper</strong><span class="classifier">float, optional</span></dt><dd><p>Wind-speed bounds for the overall risk calculation.</p>
+</dd>
+<dt><strong>low_v_lower, low_v_upper</strong><span class="classifier">float, optional</span></dt><dd><p>Wind-speed bounds for the low-wind regime.</p>
+</dd>
+<dt><strong>high_v_lower, high_v_upper</strong><span class="classifier">float, optional</span></dt><dd><p>Wind-speed bounds for the high-wind regime.</p>
+</dd>
+<dt><strong>p_upper</strong><span class="classifier">float, optional</span></dt><dd><p>Upper integration limit in normalized load space. The default is
+<code class="docutils literal notranslate"><span class="pre">1.0</span></code>.</p>
+</dd>
+<dt><strong>bin_width</strong><span class="classifier">float, optional</span></dt><dd><p>Width of the wind-speed bins. The default is <code class="docutils literal notranslate"><span class="pre">1.0</span></code>.</p>
+</dd>
+<dt><strong>fp_bin_min, fp_bin_max</strong><span class="classifier">float, optional</span></dt><dd><p>Wind-speed binning range used when fitting the lognormal
+conditional load distributions.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict of pandas.DataFrame</dt><dd><p>Dictionary containing the following DataFrames:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">original_overall</span></code> : overall risk for original data</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">original_by_regime</span></code> : low- and high-wind risks for original data</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bootstrap_overall</span></code> : overall bootstrap risks</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bootstrap_by_regime</span></code> : low- and high-wind bootstrap risks</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">stats_overall</span></code> : mean and standard deviation of overall bootstrap risks</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">stats_by_regime</span></code> : mean and standard deviation of regime bootstrap risks</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>ValueError</dt><dd><p>If required input columns are missing.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The risk calculation approximates</p>
+<div class="math notranslate nohighlight">
+\[\int_{v_{lower}}^{v_{upper}} f_v(v)
+\int_{p_{lower}(v)}^{p_{upper}} f_p(p \mid v) \, dp \, dv\]</div>
+<p>using integer wind-speed bins and fitted distribution functions.</p>
+<p>For each wind-speed bin, the contribution is the product of:</p>
+<ul class="simple">
+<li><p>the Weibull probability mass of the wind-speed bin, and</p></li>
+<li><p>the lognormal probability mass between the boundary and
+<code class="docutils literal notranslate"><span class="pre">p_upper</span></code>.</p></li>
+</ul>
+<p>Bins whose lower integration limit is greater than or equal to
+<code class="docutils literal notranslate"><span class="pre">p_upper</span></code> contribute zero risk.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="risk_tools.split_by_season">
+<span class="sig-prename descclassname"><span class="pre">risk_tools.</span></span><span class="sig-name descname"><span class="pre">split_by_season</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DataFrame</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#risk_tools.split_by_season" title="Link to this definition">¶</a></dt>
+<dd><p>Split a timestamp-indexed DataFrame into seasonal subsets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>df</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>Input DataFrame with a <code class="docutils literal notranslate"><span class="pre">DatetimeIndex</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict of pandas.DataFrame</dt><dd><p>Dictionary with keys <code class="docutils literal notranslate"><span class="pre">&quot;spring&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;summer&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;fall&quot;</span></code>,
+and <code class="docutils literal notranslate"><span class="pre">&quot;winter&quot;</span></code>. Each value is the subset of the input DataFrame
+corresponding to that season.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>TypeError</dt><dd><p>If the input DataFrame does not have a <code class="docutils literal notranslate"><span class="pre">DatetimeIndex</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Seasons are defined by calendar month as follows:</p>
+<ul class="simple">
+<li><p>winter: December, January, February</p></li>
+<li><p>spring: March, April, May</p></li>
+<li><p>summer: June, July, August</p></li>
+<li><p>fall: September, October, November</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="risk_tools.timed">
+<span class="sig-prename descclassname"><span class="pre">risk_tools.</span></span><span class="sig-name descname"><span class="pre">timed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span></span></span><a class="headerlink" href="#risk_tools.timed" title="Link to this definition">¶</a></dt>
+<dd><p>Decorate a function so that its total execution time is printed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>func</strong><span class="classifier">callable</span></dt><dd><p>Function to decorate.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>callable</dt><dd><p>Wrapped function that prints elapsed runtime when profiling is
+enabled.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This decorator is best suited to top-level functions whose total
+runtime is of interest. For finer-grained timing inside a function,
+use <code class="docutils literal notranslate"><span class="pre">timed_block</span></code> or <code class="docutils literal notranslate"><span class="pre">ProfileAccumulator</span></code>.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nd">@timed</span>
+<span class="gp">... </span><span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+<section id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">risk_tools</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2026, Geoffrey De Sena.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -25,8 +25,10 @@ from scipy.stats import lognorm, weibull_min
 
 from .fp import fp_params
 from .fv import fv_params
+from .profiling import timed
 
 
+@timed
 def risk_calculation(
     df_fp: pd.DataFrame,
     df_v: pd.DataFrame,
@@ -116,9 +118,7 @@ def risk_calculation(
     Bins whose lower integration limit is greater than or equal to
     ``p_upper`` contribute zero risk.
 
-    Examples
-    --------
-    >>> # Example omitted because realistic use requires prepared DataFrames.
+
     """
     if "v_char" not in df_v.columns:
         raise ValueError("df_v must contain a column named 'v_char'.")
@@ -189,16 +189,17 @@ def risk_calculation(
             if not np.isfinite(fp_shape) or not np.isfinite(fp_scale):
                 continue
 
-            w = weibull_min.cdf(
-                k + bin_width, c=fv_shape, scale=fv_scale, loc=0
-            ) - weibull_min.cdf(k, c=fv_shape, scale=fv_scale, loc=0)
+            w = weibull_min.cdf(k + bin_width, c=fv_shape, scale=fv_scale, loc=0) - weibull_min.cdf(
+                k, c=fv_shape, scale=fv_scale, loc=0
+            )
 
             if w <= 0:
                 continue
 
-            tail = lognorm.cdf(
-                p_upper, s=fp_shape, scale=fp_scale, loc=0
-            ) - lognorm.cdf(p_lower, s=fp_shape, scale=fp_scale, loc=0)
+            tail = (
+                lognorm.cdf(p_upper, s=fp_shape, scale=fp_scale, loc=0)
+                - lognorm.cdf(p_lower, s=fp_shape, scale=fp_scale, loc=0)
+            )
 
             total += w * max(tail, 0.0)
 
@@ -207,9 +208,7 @@ def risk_calculation(
     original_overall = pd.DataFrame(
         {
             "Risk": [
-                _risk_for_sample(
-                    "original", "danger", overall_v_lower, overall_v_upper
-                ),
+                _risk_for_sample("original", "danger", overall_v_lower, overall_v_upper),
                 _risk_for_sample("original", "limit", overall_v_lower, overall_v_upper),
             ]
         },
@@ -239,30 +238,18 @@ def risk_calculation(
         boot_overall_rows.append(
             {
                 "sample": sample_name,
-                "Danger": _risk_for_sample(
-                    sample_name, "danger", overall_v_lower, overall_v_upper
-                ),
-                "Limit": _risk_for_sample(
-                    sample_name, "limit", overall_v_lower, overall_v_upper
-                ),
+                "Danger": _risk_for_sample(sample_name, "danger", overall_v_lower, overall_v_upper),
+                "Limit": _risk_for_sample(sample_name, "limit", overall_v_lower, overall_v_upper),
             }
         )
 
         boot_regime_rows.append(
             {
                 "sample": sample_name,
-                "Low wind / Danger": _risk_for_sample(
-                    sample_name, "danger", low_v_lower, low_v_upper
-                ),
-                "Low wind / Limit": _risk_for_sample(
-                    sample_name, "limit", low_v_lower, low_v_upper
-                ),
-                "High wind / Danger": _risk_for_sample(
-                    sample_name, "danger", high_v_lower, high_v_upper
-                ),
-                "High wind / Limit": _risk_for_sample(
-                    sample_name, "limit", high_v_lower, high_v_upper
-                ),
+                "Low wind / Danger": _risk_for_sample(sample_name, "danger", low_v_lower, low_v_upper),
+                "Low wind / Limit": _risk_for_sample(sample_name, "limit", low_v_lower, low_v_upper),
+                "High wind / Danger": _risk_for_sample(sample_name, "danger", high_v_lower, high_v_upper),
+                "High wind / Limit": _risk_for_sample(sample_name, "limit", high_v_lower, high_v_upper),
             }
         )
 

@@ -38,6 +38,7 @@ from .fv import fv_params
 from .fp import fp_params
 from .risk import risk_calculation
 from .utils import coerce_v_char_input, split_by_season, format_mean_pm_std
+from .profiling import timed
 
 __all__ = [
     "bootstrap",
@@ -47,4 +48,5 @@ __all__ = [
     "coerce_v_char_input",
     "split_by_season",
     "format_mean_pm_std",
+    "timed",
 ]
